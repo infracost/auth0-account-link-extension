@@ -23,7 +23,6 @@ module.exports = ({ extensionURL = '', username = 'Unknown', clientID = '', clie
     endpoints: {
       linking: '${extensionURL.replace(/\/$/g, '')}',
       userApi: auth0.baseUrl + '/users',
-      usersByEmailApi: auth0.baseUrl + '/users-by-email'
     },
     token: {
       clientId: '${clientID}',
@@ -201,9 +200,9 @@ module.exports = ({ extensionURL = '', username = 'Unknown', clientID = '', clie
 
   function searchUsersWithSameEmail() {
     return apiCall({
-      url: config.endpoints.usersByEmailApi,
+      url: config.endpoints.userApi,
       qs: {
-        email: user.email
+        q: 'email:"' + user.email + '"',
       }
     });
   }
