@@ -55,7 +55,21 @@ module.exports = ({ extensionURL = '', username = 'Unknown', clientID = '', clie
     }
 
     function shouldPrompt() {
-      return !insideRedirect() && !redirectingToContinue() && firstLogin();
+      console.log("context");
+      console.log(context);
+      console.log("redirect");
+      console.log(!insideRedirect());
+      console.log("redirect to continue");
+      console.log(!redirectingToContinue());
+      console.log("has app user ID");
+      console.log(hasAppUserId());
+      return !insideRedirect() && !redirectingToContinue() && !hasAppUserId();
+
+      // Check if the user has an app userId set
+      // This is set when the user is successfully registered
+      function hasAppUserId() {
+        return user.app_metadata && !!user.app_metadata.userId;
+      }
 
       // Check if we're inside a redirect
       // in order to avoid a redirect loop
@@ -63,13 +77,6 @@ module.exports = ({ extensionURL = '', username = 'Unknown', clientID = '', clie
       function insideRedirect() {
         return context.request.query.redirect_uri &&
           context.request.query.redirect_uri.indexOf(config.endpoints.linking) !== -1;
-      }
-
-      // Check if this is the first login of the user
-      // since merging already active accounts can be a
-      // destructive action
-      function firstLogin() {
-        return context.stats.loginsCount <= 1;
       }
 
       // Check if we're coming back from a redirect
